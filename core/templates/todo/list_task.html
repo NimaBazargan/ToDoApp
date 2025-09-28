@@ -20,7 +20,7 @@
           {% csrf_token %}
           <div class="input-group mb-3">
             <input type="text" class="form-control rounded-4" name="title" placeholder="Enter task title"
-              aria-label="Recipient's username" aria-describedby="button-addon2">
+              aria-label="Recipient's username" aria-describedby="button-addon2" required="True">
             <button class="btn btn-primary" type="submit">Add</button>
           </div>
 
@@ -41,7 +41,11 @@
               <span class="visually-hidden">Toggle Dropdown</span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
+              {% if not task.complete %}
               <li><a class="dropdown-item" href="{% url 'complete_task' task.id %}">Done</a></li>
+              {% else %}
+              <li><a class="dropdown-item" href="{% url 'incomplete_task' task.id %}">UnDone</a></li>
+              {% endif %}
               <li><a class="dropdown-item" href="{% url 'update_task' task.id %}">Edit</a></li>
             </ul>
           </div>

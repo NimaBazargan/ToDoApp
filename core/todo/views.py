@@ -4,13 +4,16 @@ from .models import Task
 from .forms import TaskForm
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.models import Profile
+from django.core.exceptions import PermissionDenied
 
 class TaskListView(LoginRequiredMixin,ListView):
     context_object_name = "tasks"
     template_name = "todo/list_task.html"
 
     def get_queryset(self):
-        tasks = Task.objects.filter(user=self.request.user)
+        profile = Profile.objects.get(user=self.request.user)
+        tasks = Task.objects.filter(user=profile)
         return tasks
     
 class TaskCreateView(LoginRequiredMixin,CreateView):
@@ -19,7 +22,8 @@ class TaskCreateView(LoginRequiredMixin,CreateView):
     success_url = '/'
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        profile = Profile.objects.get(user=self.request.user)
+        form.instance.user = profile
         return super(TaskCreateView,self).form_valid(form)
     
 class TaskUpdateView(LoginRequiredMixin,UpdateView):
@@ -28,14 +32,22 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
     success_url = '/'
     template_name = "todo/update_task.html"
 
+    def get_object(self, queryset=None):
+        obj = super(TaskUpdateView,self).get_object(queryset)
+        if obj.user.user != self.request.user:
+             raise PermissionDenied
+        return obj
+
+
 class TaskCompleteView(LoginRequiredMixin,View):
     model = Task
     success_url = '/'
 
     def get(self, request, *args, **kwargs):
         object = Task.objects.get(id=kwargs.get("pk"))
-        object.complete = True
-        object.save()
+        if object.user.user == request.user:
+            object.complete = True
+            object.save()
         return redirect(self.success_url)
     
 class TaskDeleteView(LoginRequiredMixin,DeleteView):
@@ -47,7 +59,19 @@ class TaskDeleteView(LoginRequiredMixin,DeleteView):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        self.object.delete()
+        if self.object.user.user == self.request.user:
+            self.object.delete()
+        return redirect(self.success_url)
+
+class TaskInCompleteView(LoginRequiredMixin,View):
+    model = Task
+    success_url = '/'
+
+    def get(self, request, *args, **kwargs):
+        object = Task.objects.get(id=kwargs.get("pk"))
+        if object.user.user == request.user:
+            object.complete = False
+            object.save()
         return redirect(self.success_url)
 
 
