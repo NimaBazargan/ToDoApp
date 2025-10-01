@@ -5,6 +5,9 @@ from django.contrib.auth import get_user_model
 
 
 class Task(models.Model):
+    """
+    This is a model for tasks
+    """
     user = models.ForeignKey(
         'accounts.Profile', on_delete=models.CASCADE, null=True, blank=True
     )

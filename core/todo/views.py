@@ -8,6 +8,9 @@ from accounts.models import Profile
 from django.core.exceptions import PermissionDenied
 
 class TaskListView(LoginRequiredMixin,ListView):
+    """
+    Getting a list of tasks
+    """
     context_object_name = "tasks"
     template_name = "todo/list_task.html"
 
@@ -17,6 +20,9 @@ class TaskListView(LoginRequiredMixin,ListView):
         return tasks
     
 class TaskCreateView(LoginRequiredMixin,CreateView):
+    """
+    Creating new task
+    """
     model = Task
     form_class = TaskForm
     success_url = '/'
@@ -27,6 +33,9 @@ class TaskCreateView(LoginRequiredMixin,CreateView):
         return super(TaskCreateView,self).form_valid(form)
     
 class TaskUpdateView(LoginRequiredMixin,UpdateView):
+    """
+    Editing a task
+    """
     model = Task
     form_class = TaskForm
     success_url = '/'
@@ -40,6 +49,9 @@ class TaskUpdateView(LoginRequiredMixin,UpdateView):
 
 
 class TaskCompleteView(LoginRequiredMixin,View):
+    """
+    Changing task complete to True
+    """
     model = Task
     success_url = '/'
 
@@ -51,6 +63,9 @@ class TaskCompleteView(LoginRequiredMixin,View):
         return redirect(self.success_url)
     
 class TaskDeleteView(LoginRequiredMixin,DeleteView):
+    """
+    Deleting a task
+    """
     model = Task
     success_url = '/'
 
@@ -64,6 +79,9 @@ class TaskDeleteView(LoginRequiredMixin,DeleteView):
         return redirect(self.success_url)
 
 class TaskInCompleteView(LoginRequiredMixin,View):
+    """
+    Changing task complete to False
+    """
     model = Task
     success_url = '/'
 

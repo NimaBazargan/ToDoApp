@@ -9,6 +9,9 @@ from django.views.generic import CreateView
 
 
 class CustomLoginView(LoginView):
+    """
+    A view for Login Page
+    """
     template_name = "accounts/login.html"
     form_class = LoginForm
     redirect_authenticated_user = True
@@ -29,6 +32,9 @@ class CustomLoginView(LoginView):
     #         return self.form_invalid(form)
         
 class CustomSignupView(CreateView):
+    """
+    A view for SignUp Page
+    """
     model = User
     form_class = CustomUserCreationForm
     success_url = '/accounts/login'
