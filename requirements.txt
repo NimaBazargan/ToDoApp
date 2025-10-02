@@ -1,3 +1,6 @@
 Django >4.2,<4.3
 python-decouple
 pillow
+djangorestframework
+markdown 
+django-filter==24.3 
