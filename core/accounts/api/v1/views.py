@@ -15,6 +15,8 @@ from accounts.models import Profile
 import jwt
 from django.conf import settings
 from jwt.exceptions import ExpiredSignatureError, InvalidSignatureError
+from .permissions import AllowUnauthenticatedUser
+from rest_framework.exceptions import PermissionDenied
 
 User = get_user_model()
 
@@ -154,6 +156,7 @@ class ActivationResendApiView(GenericAPIView):
     
 class ResetPasswordApiView(GenericAPIView):
     serializer_class = ResetPasswordSerializer
+    permission_classes = [AllowUnauthenticatedUser]
 
     def post(self,request):
         serializer = self.serializer_class(data=request.data)
@@ -167,10 +170,16 @@ class ResetPasswordApiView(GenericAPIView):
     def get_tokens_for_user(self,user):
         refresh = RefreshToken.for_user(user)
         return str(refresh.access_token)
+
+    def handle_exception(self, exc):
+        if isinstance(exc, PermissionDenied):
+            return Response({"detail": "You should be logged out to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        return super().handle_exception(exc)
     
 class ResetConfirmApiView(GenericAPIView):
     serializer_class = ResetConfirmSerializer
-  
+    permission_classes = [AllowUnauthenticatedUser]
+     
     def put(self, request, token):
         try:
             token = jwt.decode(token,settings.SECRET_KEY, algorithms=["HS256"])
@@ -189,4 +198,9 @@ class ResetConfirmApiView(GenericAPIView):
             self.object.save()
             return Response({'detail':'password changed successfully'},status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def handle_exception(self, exc):
+        if isinstance(exc, PermissionDenied):
+            return Response({"detail": "You should be logged out to perform this action."}, status=status.HTTP_403_FORBIDDEN)
+        return super().handle_exception(exc)
 
