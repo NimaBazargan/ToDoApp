@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'todo.apps.TodoConfig',
     'rest_framework',
     'django_filters',
-     'drf_yasg',
+    'drf_yasg',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'mail_templated',
 ]
 
 MIDDLEWARE = [
@@ -141,5 +144,19 @@ AUTH_USER_MODEL = "accounts.User"
 
 # restframework setting
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS' : 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS' : 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',   
+    ]
 }
+
+# email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp4dev'
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = ''  
+EMAIL_HOST_PASSWORD = ''
