@@ -12,3 +12,28 @@ services:
     environment:
       - SECRET_KEY='django-insecure-2e@_q4&t7h62an(v5m)o-u77!*-hanljb2ux85amq@t_!+5rck'
       - DEBUG=True
+
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    restart: always
+    ports:
+      # Change the number before : to the port the web interface should be accessible on
+      # Add 127.0.0.1: prefix for localhost-only access (recommended for security)
+      - '5000:80'
+      # Change the number before : to the port the SMTP server should be accessible on
+      # Add 127.0.0.1: prefix for localhost-only access (recommended for security)
+      - '25:25'
+      # Change the number before : to the port the IMAP server should be accessible on
+      # Add 127.0.0.1: prefix for localhost-only access (recommended for security)
+      - '143:143'
+      # Change the number before : to the port the POP3 server should be accessible on
+      # Add 127.0.0.1: prefix for localhost-only access (recommended for security)
+      - '110:110'
+    volumes:
+        - smtp4dev-data:/smtp4dev
+    environment:
+      - ServerOptions__Urls=http://*:80
+      - ServerOptions__HostName=smtp4dev
+
+volumes:
+  smtp4dev-data:
