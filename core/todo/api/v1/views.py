@@ -8,12 +8,13 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from .filters import TaskFilter
 from .paginations import DefaultPagination
 
+
 class TaskModelViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
-    filter_backends = [DjangoFilterBackend,SearchFilter,OrderingFilter]
-    search_fields = ['title','user__user__email']
-    ordering_fields = ['created_date','user']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ["title", "user__user__email"]
+    ordering_fields = ["created_date", "user"]
     pagination_class = DefaultPagination
     filterset_class = TaskFilter
