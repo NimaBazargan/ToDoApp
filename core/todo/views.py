@@ -7,10 +7,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import Profile
 from django.core.exceptions import PermissionDenied
 
-class TaskListView(LoginRequiredMixin,ListView):
+
+class TaskListView(LoginRequiredMixin, ListView):
     """
     Getting a list of tasks
     """
+
     context_object_name = "tasks"
     template_name = "todo/list_task.html"
 
@@ -18,42 +20,47 @@ class TaskListView(LoginRequiredMixin,ListView):
         profile = Profile.objects.get(user=self.request.user)
         tasks = Task.objects.filter(user=profile)
         return tasks
-    
-class TaskCreateView(LoginRequiredMixin,CreateView):
+
+
+class TaskCreateView(LoginRequiredMixin, CreateView):
     """
     Creating new task
     """
+
     model = Task
     form_class = TaskForm
-    success_url = '/'
+    success_url = "/"
 
     def form_valid(self, form):
         profile = Profile.objects.get(user=self.request.user)
         form.instance.user = profile
-        return super(TaskCreateView,self).form_valid(form)
-    
-class TaskUpdateView(LoginRequiredMixin,UpdateView):
+        return super(TaskCreateView, self).form_valid(form)
+
+
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
     """
     Editing a task
     """
+
     model = Task
     form_class = TaskForm
-    success_url = '/'
+    success_url = "/"
     template_name = "todo/update_task.html"
 
     def get_object(self, queryset=None):
-        obj = super(TaskUpdateView,self).get_object(queryset)
+        obj = super(TaskUpdateView, self).get_object(queryset)
         if obj.user.user != self.request.user:
-             raise PermissionDenied
+            raise PermissionDenied
         return obj
 
 
-class TaskCompleteView(LoginRequiredMixin,View):
+class TaskCompleteView(LoginRequiredMixin, View):
     """
     Changing task complete to True
     """
+
     model = Task
-    success_url = '/'
+    success_url = "/"
 
     def get(self, request, *args, **kwargs):
         object = Task.objects.get(id=kwargs.get("pk"))
@@ -61,13 +68,15 @@ class TaskCompleteView(LoginRequiredMixin,View):
             object.complete = True
             object.save()
         return redirect(self.success_url)
-    
-class TaskDeleteView(LoginRequiredMixin,DeleteView):
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
     """
     Deleting a task
     """
+
     model = Task
-    success_url = '/'
+    success_url = "/"
 
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
@@ -78,12 +87,14 @@ class TaskDeleteView(LoginRequiredMixin,DeleteView):
             self.object.delete()
         return redirect(self.success_url)
 
-class TaskInCompleteView(LoginRequiredMixin,View):
+
+class TaskInCompleteView(LoginRequiredMixin, View):
     """
     Changing task complete to False
     """
+
     model = Task
-    success_url = '/'
+    success_url = "/"
 
     def get(self, request, *args, **kwargs):
         object = Task.objects.get(id=kwargs.get("pk"))
@@ -91,7 +102,3 @@ class TaskInCompleteView(LoginRequiredMixin,View):
             object.complete = False
             object.save()
         return redirect(self.success_url)
-
-
-
-
