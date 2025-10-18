@@ -12,6 +12,7 @@ djangorestframework_simplejwt
 
 # deployment modules
 coreapi
+persiantools
 
 # email third party modules
 django-mail-templated
@@ -27,3 +28,4 @@ Faker
 celery
 redis
 django-celery-beat
+django-redis

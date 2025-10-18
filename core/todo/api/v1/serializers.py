@@ -44,3 +44,7 @@ class TaskSerializer(serializers.ModelSerializer):
             user__id=self.context.get("request").user.id
         )
         return super().create(validated_data)
+
+
+class WeatherSerializer(serializers.Serializer):
+    city = serializers.CharField(required=True)
