@@ -28,7 +28,7 @@ class TaskModelViewSet(viewsets.ModelViewSet):
 
 class WeatherApiView(APIView):
     serializer_class = WeatherSerializer
-    KEY = 'Your_Key'
+    KEY = "Your_Key"
 
     def find_latlon(self, city_name):
         """
