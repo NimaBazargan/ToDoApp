@@ -29,5 +29,8 @@ redis
 django-celery-beat
 django-redis
 
+# database module
+psycopg2-binary
+
 coreapi
 persiantools

@@ -9,10 +9,20 @@ services:
       - "6379:6379"
     command: redis-server --save 60 1 --loglevel warning
 
+  postgres:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: todoapp
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: a/@123456
+    volumes:
+      - dbwebservice:/var/lab/postgressql/data
+
   backend:
     build: .
     container_name: todoapp
-    command: gunicorn core.wsgi --bind 0.0.0.0:8000
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && gunicorn core.wsgi --bind 0.0.0.0:8000"
     volumes:
       - ./core:/app
       - static_volume:/app/static
@@ -24,6 +34,7 @@ services:
       - DEBUG=True
     depends_on:
       - redis
+      - postgres
 
   nginx:
     image: nginx
@@ -60,3 +71,4 @@ services:
 volumes:
   static_volume:
   media_volume:
+  dbwebservice:
